@@ -63,10 +63,10 @@
   ;; End with this
   (treesit-major-mode-setup))
 
-(defun forester-new ()
+(defun forester-new (prefix)
   "Call forester new with dest = the file associated to the
-   current buffer, and prefix pbn."
-  (interactive)
+   current buffer, and the given prefix."
+  (interactive "sPrefix: ")
   (let ((root-dir
 	 (progn
 	   (setq-local dd (file-name-directory (buffer-file-name)))
@@ -79,7 +79,7 @@
   (let ((new-buffer (generate-new-buffer "*forester-new-output*")))
     (let ((exit-status
 	   (call-process "forester" nil new-buffer nil "new"
-			 "--prefix=pbn"
+			 (concat "--prefix=" prefix)
 			 (concat "--dest=" (file-name-directory (buffer-file-name)))
 			 "./forest.toml"
 			 )))
@@ -97,25 +97,7 @@
 	  (kill-buffer new-buffer)
 	  )
 	 (t (with-help-window new-buffer buffer-contents))))))
-    ))
-  
-  ;; (let ((new-buffer (generate-new-buffer "*forester-new-output*")))
-  ;;   (let ((exit-status
-  ;; 	   (call-process "forester" nil new-buffer nil "new"
-  ;; 			 "--prefix=pbn"
-  ;; 			 (concat "--dest=" default-directory)
-  ;; 			 "/home/patrick/forester_stuff/pbn/forest.toml"
-  ;; 			 )))
-  ;;     (let ((buffer-contents (with-current-buffer new-buffer (buffer-string))))
-  ;; 	(cond
-  ;; 	 ((eq exit-status 0)
-  ;; 	  (progn
-  ;; 	    (insert "\transclude{}")
-  ;; 	    (backward-char)
-  ;; 	    (insert-buffer new-buffer)
-  ;; 	    (forward-char)
-  ;; 	    (find-file-other-frame buffer-contents)))
-  ;; 	 (t (with-help-window new-buffer buffer-contents)))))))
+  ))
 
 (define-derived-mode forester-mode text-mode "Forester"
   "Major mode for editing Forester trees.
